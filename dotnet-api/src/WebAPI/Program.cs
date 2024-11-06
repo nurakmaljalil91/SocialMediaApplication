@@ -1,6 +1,5 @@
-// Add Logger
-
 using System.Globalization;
+using Application;
 using Serilog;
 using WebAPI;
 
@@ -15,7 +14,7 @@ Log.Information("UTC Time: {DateTimeUtcNow}", dateTimeUtcNow);
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-    
+
     // Read Serilog configuration from appsettings.json
     builder.Host.UseSerilog((context, configuration) =>
     {
@@ -23,13 +22,13 @@ try
     });
 
     // Add services to the container.
-    // builder.Services.AddApplicationServices();
+    builder.Services.AddApplicationServices();
     // builder.Services.AddInfrastructureServices(builder.Configuration);
     builder.Services.AddWebAPIServices(builder.Configuration);
 
     // Add services to the container.
     builder.Services.AddControllers();
-    
+
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
 
@@ -38,9 +37,8 @@ try
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
-       
     }
-    
+
     // Add OpenAPI 3.0 document serving middleware
     app.UseOpenApi();
 
@@ -51,17 +49,17 @@ try
     app.UseReDoc(options => { options.Path = "/redoc"; });
 
     app.UseHttpsRedirection();
-    
+
     app.UseSerilogRequestLogging();
 
     app.UseCors("CorsPolicy");
 
     // app.UseAuthentication();
-    
+
     app.UseAuthorization();
 
     app.MapControllers();
-    
+
     // app.MapHealthChecks("/health", new HealthCheckOptions()
     // {
     //     ResponseWriter = HealthCheckResponse.WriteResponse
